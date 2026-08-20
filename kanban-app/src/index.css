@@ -22,26 +22,8 @@
 }
 
 /* Dark palette: same token names, different values, so every component
-   below stays theme-agnostic. Applied automatically from OS preference,
-   or forced by the toggle via [data-theme] (which always wins). */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg-board: #1c1e22;
-    --bg-column: #17191c;
-    --shadow-light: #24272c;
-    --shadow-dark: #0d0e10;
-    --ink: #e9ebee;
-    --ink-muted: #8b929c;
-    --paper: #24272c;
-    --rule-line: rgba(110, 150, 255, 0.12);
-    --margin-line: rgba(255, 110, 110, 0.38);
-    --accent-blue: #5b8afc;
-    --dash-line: #3a3e46;
-    --drag-over-bg: #202329;
-    --hover-strong: #2c2f36;
-    --highlight-bg: rgba(224, 160, 48, 0.45);
-  }
-}
+   below stays theme-agnostic. Light is the fixed default regardless of OS
+   preference - dark only activates via the toggle setting [data-theme]. */
 :root[data-theme="dark"] {
   --bg-board: #1c1e22;
   --bg-column: #17191c;

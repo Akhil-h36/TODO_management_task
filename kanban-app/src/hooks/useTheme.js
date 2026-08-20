@@ -11,29 +11,23 @@ function readStoredTheme() {
   }
 }
 
-function systemPrefersDark() {
-  return typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
-}
-
 /**
- * `explicitTheme` is null until the user picks one via the toggle, meaning
- * "follow the OS setting" (handled in CSS via prefers-color-scheme). Once
- * they toggle, that choice is explicit and persisted, overriding the OS
- * setting from then on.
+ * Light is the fixed default regardless of OS preference. `explicitTheme`
+ * is null until the user picks dark via the toggle; that choice persists
+ * and is the only thing that switches the theme away from light.
  */
 export function useTheme() {
   const [explicitTheme, setExplicitTheme] = useState(readStoredTheme);
 
   useEffect(() => {
     const root = document.documentElement;
-    if (explicitTheme) root.setAttribute("data-theme", explicitTheme);
+    if (explicitTheme === "dark") root.setAttribute("data-theme", "dark");
     else root.removeAttribute("data-theme");
   }, [explicitTheme]);
 
   function toggleTheme() {
     setExplicitTheme((current) => {
-      const isDark = current === "dark" || (!current && systemPrefersDark());
-      const next = isDark ? "light" : "dark";
+      const next = current === "dark" ? "light" : "dark";
       try {
         localStorage.setItem(STORAGE_KEY, next);
       } catch {
@@ -43,7 +37,5 @@ export function useTheme() {
     });
   }
 
-  const resolvedTheme = explicitTheme ?? (systemPrefersDark() ? "dark" : "light");
-
-  return { theme: resolvedTheme, toggleTheme };
+  return { theme: explicitTheme === "dark" ? "dark" : "light", toggleTheme };
 }
