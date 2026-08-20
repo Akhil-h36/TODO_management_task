@@ -40,6 +40,11 @@ export function useDraggableCard({ tilt, onDrop, onClick, disabled }) {
       let ghostY = rect.top;
 
       function startGhost() {
+        // Dragging is pointermove-based, not native HTML5 DnD, so nothing
+        // stops the browser from treating the movement as a text selection
+        // over whatever the cursor crosses. Suppress it for the duration.
+        window.getSelection?.()?.removeAllRanges();
+        document.body.classList.add("no-select");
         cardEl.style.opacity = "0.25";
         ghost = cardEl.cloneNode(true);
         ghost.classList.add("drag-ghost");
@@ -73,6 +78,7 @@ export function useDraggableCard({ tilt, onDrop, onClick, disabled }) {
           startGhost();
         }
         if (dragging) {
+          ev.preventDefault();
           ghostX = ev.clientX - offsetX;
           ghostY = ev.clientY - offsetY;
           const ddx = ev.clientX - lastX;
@@ -87,6 +93,7 @@ export function useDraggableCard({ tilt, onDrop, onClick, disabled }) {
       function onUp(ev) {
         window.removeEventListener("pointermove", onMove);
         window.removeEventListener("pointerup", onUp);
+        document.body.classList.remove("no-select");
         if (dragging) {
           cancelAnimationFrame(raf);
           document.querySelectorAll(".column").forEach((c) => c.classList.remove("drag-over"));

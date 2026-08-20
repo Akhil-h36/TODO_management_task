@@ -4,10 +4,13 @@ import { useTheme } from "../hooks/useTheme";
 import ConfirmDialog from "./ConfirmDialog";
 
 export default function Header({ onNewTask }) {
-  const { searchTerm, setSearchTerm, tasks } = useTaskState();
+  const { searchTerm, setSearchTerm, tasks, limits } = useTaskState();
   const { clearAll } = useTaskActions();
   const { theme, toggleTheme } = useTheme();
   const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const todoCount = tasks.filter((t) => t.status === "todo").length;
+  const todoAtLimit = limits.todo != null && todoCount >= limits.todo;
 
   return (
     <header>
@@ -57,7 +60,12 @@ export default function Header({ onNewTask }) {
           </svg>
           Wipe All
         </button>
-        <button className="btn-new" onClick={onNewTask}>
+        <button
+          className="btn-new"
+          disabled={todoAtLimit}
+          title={todoAtLimit ? `To Do is at its limit (${todoCount}/${limits.todo})` : undefined}
+          onClick={onNewTask}
+        >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
             <path d="M12 5v14M5 12h14" />
           </svg>

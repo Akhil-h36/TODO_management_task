@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, useState } from "react";
 import { seedTasks } from "../data/seedTasks";
-import { STORAGE_KEY } from "../utils/constants";
+import { DEFAULT_LIMITS, LIMITS_STORAGE_KEY, STORAGE_KEY } from "../utils/constants";
 import { makeId } from "../utils/helpers";
 
 const TaskStateContext = createContext(null);
@@ -14,6 +14,16 @@ function loadInitialTasks() {
     console.warn("Failed to read tasks from localStorage, falling back to seed data.", err);
   }
   return seedTasks;
+}
+
+function loadInitialLimits() {
+  try {
+    const raw = localStorage.getItem(LIMITS_STORAGE_KEY);
+    if (raw) return { ...DEFAULT_LIMITS, ...JSON.parse(raw) };
+  } catch (err) {
+    console.warn("Failed to read column limits from localStorage, falling back to defaults.", err);
+  }
+  return DEFAULT_LIMITS;
 }
 
 function tasksReducer(tasks, action) {
@@ -39,6 +49,7 @@ export function TaskProvider({ children }) {
   const [tasks, dispatch] = useReducer(tasksReducer, undefined, loadInitialTasks);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
+  const [limits, setLimits] = useState(loadInitialLimits);
 
   useEffect(() => {
     try {
@@ -47,6 +58,14 @@ export function TaskProvider({ children }) {
       console.warn("Failed to persist tasks to localStorage.", err);
     }
   }, [tasks]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(LIMITS_STORAGE_KEY, JSON.stringify(limits));
+    } catch (err) {
+      console.warn("Failed to persist column limits to localStorage.", err);
+    }
+  }, [limits]);
 
   const actions = useMemo(
     () => ({
@@ -65,13 +84,16 @@ export function TaskProvider({ children }) {
       clearAll() {
         dispatch({ type: "CLEAR_ALL" });
       },
+      setColumnLimit(status, limit) {
+        setLimits((prev) => ({ ...prev, [status]: limit }));
+      },
     }),
     []
   );
 
   const stateValue = useMemo(
-    () => ({ tasks, searchTerm, activeFilter, setSearchTerm, setActiveFilter }),
-    [tasks, searchTerm, activeFilter]
+    () => ({ tasks, searchTerm, activeFilter, limits, setSearchTerm, setActiveFilter }),
+    [tasks, searchTerm, activeFilter, limits]
   );
 
   return (

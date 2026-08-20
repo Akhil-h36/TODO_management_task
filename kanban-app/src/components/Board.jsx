@@ -4,9 +4,10 @@ import { STATUSES } from "../utils/constants";
 import { useTaskActions, useTaskState } from "../context/TaskContext";
 
 export default function Board({ onOpenTask, onAddTask }) {
-  const { tasks, searchTerm, activeFilter } = useTaskState();
-  const { deleteTask, moveTask } = useTaskActions();
+  const { tasks, searchTerm, activeFilter, limits } = useTaskState();
+  const { deleteTask, moveTask, setColumnLimit } = useTaskActions();
   const [justMovedId, setJustMovedId] = useState(null);
+  const [blockedColumn, setBlockedColumn] = useState(null);
 
   const tasksByColumn = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
@@ -24,6 +25,16 @@ export default function Board({ onOpenTask, onAddTask }) {
   }, [tasks, searchTerm, activeFilter]);
 
   function handleMove(id, status) {
+    const task = tasks.find((t) => t.id === id);
+    if (!task || task.status === status) return;
+
+    const limit = limits[status];
+    const currentCount = tasksByColumn[status].all.length;
+    if (limit && currentCount >= limit) {
+      setBlockedColumn(status);
+      return;
+    }
+
     moveTask(id, status);
     setJustMovedId(id);
   }
@@ -38,11 +49,15 @@ export default function Board({ onOpenTask, onAddTask }) {
           allTasksInColumn={tasksByColumn[status].all}
           visibleTasks={tasksByColumn[status].visible}
           justMovedId={justMovedId}
+          limit={limits[status]}
+          isBlocked={blockedColumn === status}
           onOpen={onOpenTask}
           onDelete={deleteTask}
           onMove={handleMove}
           onAdd={onAddTask}
           onSettled={() => setJustMovedId(null)}
+          onBlockedSettled={() => setBlockedColumn(null)}
+          onSetLimit={setColumnLimit}
         />
       ))}
     </div>
