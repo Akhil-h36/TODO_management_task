@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDraggableCard } from "../hooks/useDraggableCard";
 import { fmtDate, isOverdue, tiltFor } from "../utils/helpers";
+import { renderFormattedText } from "../utils/richText";
 import ConfirmDialog from "./ConfirmDialog";
 
 export default function TaskCard({ task, onOpen, onDelete, onMove, justMoved, onSettled }) {
@@ -50,7 +51,7 @@ export default function TaskCard({ task, onOpen, onDelete, onMove, justMoved, on
         </button>
       </div>
       <h3>{task.title}</h3>
-      <p className="desc">{task.desc}</p>
+      <p className="desc">{renderFormattedText(task.desc)}</p>
       <div className="card-meta">
         <span className={`priority-tag ${task.priority}`}>{task.priority}</span>
         <span className="due-tag">

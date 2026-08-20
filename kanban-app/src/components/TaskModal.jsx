@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTaskActions, useTaskState } from "../context/TaskContext";
 import { fmtDate, isOverdue } from "../utils/helpers";
+import { renderFormattedText } from "../utils/richText";
 import Dropdown from "./ui/Dropdown";
 import DatePicker from "./ui/DatePicker";
 import ConfirmDialog from "./ConfirmDialog";
@@ -25,6 +26,7 @@ export default function TaskModal({ modalState, onClose, onRequestEdit }) {
   const { addTask, updateTask, deleteTask } = useTaskActions();
   const paperRef = useRef(null);
   const titleInputRef = useRef(null);
+  const descRef = useRef(null);
 
   const [isClosing, setIsClosing] = useState(false);
   const visible = modalState.mode !== "closed" || isClosing;
@@ -115,6 +117,23 @@ export default function TaskModal({ modalState, onClose, onRequestEdit }) {
     requestClose();
   }
 
+  function wrapDescSelection(marker) {
+    const el = descRef.current;
+    if (!el) return;
+    const { selectionStart, selectionEnd, value } = el;
+    const selected = value.slice(selectionStart, selectionEnd);
+    const nextValue = value.slice(0, selectionStart) + marker + selected + marker + value.slice(selectionEnd);
+
+    setDraft((d) => ({ ...d, desc: nextValue }));
+    if (errors.desc) setErrors((er) => ({ ...er, desc: false }));
+
+    requestAnimationFrame(() => {
+      el.focus();
+      const cursorStart = selectionStart + marker.length;
+      el.setSelectionRange(cursorStart, cursorStart + selected.length);
+    });
+  }
+
   function handleConfirmDelete() {
     if (task) deleteTask(task.id);
     setConfirmOpen(false);
@@ -203,7 +222,17 @@ export default function TaskModal({ modalState, onClose, onRequestEdit }) {
               </div>
             </div>
 
+            <div className="rt-toolbar">
+              <button type="button" className="rt-btn" title="Bold selected text" onClick={() => wrapDescSelection("**")}>
+                <strong>B</strong>
+              </button>
+              <button type="button" className="rt-btn" title="Highlight selected text" onClick={() => wrapDescSelection("==")}>
+                <span className="rt-highlight-swatch">H</span>
+              </button>
+              <span className="rt-hint">Select text, then Bold or Highlight</span>
+            </div>
             <textarea
+              ref={descRef}
               className={`pv-desc-input${errors.desc ? " error" : ""}`}
               placeholder="Add a description..."
               value={draft.desc}
@@ -222,7 +251,7 @@ export default function TaskModal({ modalState, onClose, onRequestEdit }) {
               {isOverdue(task) ? "Overdue · " : "Due "}
               {fmtDate(task.due)}
             </p>
-            <p className="pv-desc">{task.desc ? task.desc : <em>No description.</em>}</p>
+            <p className="pv-desc">{task.desc ? renderFormattedText(task.desc) : <em>No description.</em>}</p>
           </div>
         ) : null}
         </div>

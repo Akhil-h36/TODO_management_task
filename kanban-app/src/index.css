@@ -18,6 +18,7 @@
   --dash-line: #d5dae0;
   --drag-over-bg: #eaedf1;
   --hover-strong: #e6e9ec;
+  --highlight-bg: rgba(224, 160, 48, 0.35);
 }
 
 /* Dark palette: same token names, different values, so every component
@@ -38,6 +39,7 @@
     --dash-line: #3a3e46;
     --drag-over-bg: #202329;
     --hover-strong: #2c2f36;
+    --highlight-bg: rgba(224, 160, 48, 0.45);
   }
 }
 :root[data-theme="dark"] {
@@ -54,6 +56,7 @@
   --dash-line: #3a3e46;
   --drag-over-bg: #202329;
   --hover-strong: #2c2f36;
+  --highlight-bg: rgba(224, 160, 48, 0.45);
 }
 
 *{ box-sizing: border-box; }
@@ -322,6 +325,20 @@ header { display: flex; align-items: flex-end; justify-content: space-between; g
   background: var(--bg-column); box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light); outline: none; resize: vertical; color: var(--ink);
 }
 .pv-desc-input.error { box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light), 0 0 0 2px rgba(225, 82, 82, 0.4); }
+
+/* ---------- INLINE FORMATTING (**bold**, ==highlight==) ---------- */
+mark { background: var(--highlight-bg); color: inherit; border-radius: 3px; padding: 0 2px; }
+
+.rt-toolbar { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.rt-btn {
+  width: 26px; height: 26px; flex-shrink: 0; border: none; border-radius: 7px; cursor: pointer;
+  background: var(--bg-column); color: var(--ink); font-family: "Noto Sans"; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 2px 2px 5px var(--shadow-dark), -2px -2px 5px var(--shadow-light);
+}
+.rt-btn:hover { color: var(--accent-blue); }
+.rt-highlight-swatch { background: var(--highlight-bg); border-radius: 3px; padding: 0 4px; font-size: 11px; font-weight: 700; }
+.rt-hint { font-size: 11px; color: var(--ink-muted); }
 
 /* ---------- CUSTOM DROPDOWN (priority select) ---------- */
 .dropdown { position: relative; width: 100%; font-family: "Noto Sans"; }
