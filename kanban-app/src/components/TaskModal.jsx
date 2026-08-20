@@ -164,6 +164,7 @@ export default function TaskModal({ modalState, onClose, onRequestEdit }) {
           </button>
         </div>
 
+        <div className="big-paper-header" />
         <div className="big-paper-body">
         {isEditing ? (
           <div>

@@ -213,29 +213,33 @@ header { display: flex; align-items: flex-end; justify-content: space-between; g
   overflow: hidden;
 }
 .big-paper::before { content: ""; position: absolute; top: 0; bottom: 0; left: 38px; width: 1px; background: var(--margin-line); z-index: 1; }
-.big-paper::after {
+
+/* Non-scrolling header strip: holds the spiral holes + action icons on a
+   solid background, so scrolled body text can never show through behind
+   them (it used to, when the icons floated directly over the scroll area). */
+.big-paper-header { position: relative; flex-shrink: 0; height: 54px; background: var(--paper); z-index: 3; }
+.big-paper-header::after {
   content: ""; position: absolute; top: 14px; left: 50%; width: 100px; height: 9px; transform: translateX(-50%);
   background-image: radial-gradient(circle, var(--bg-column) 3.4px, transparent 3.5px);
   background-size: 22px 9px; background-repeat: repeat-x; box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12);
-  z-index: 2;
 }
 
 /* Content scrolls independently of the card frame, so long descriptions
-   never push the modal taller than the viewport; the spiral holes and
-   margin line stay put as chrome instead of scrolling away with the text. */
+   never push the modal taller than the viewport; the header above stays
+   put as chrome instead of scrolling away with the text. */
 .big-paper-body {
   flex: 1 1 auto; min-height: 0; overflow-y: auto;
   background: var(--paper);
   background-image: repeating-linear-gradient(var(--paper) 0 27px, var(--rule-line) 27px 28px);
-  background-position: 0 6px; background-repeat: repeat-y;
-  padding: 44px 34px 30px 52px;
+  background-position: 0 2px; background-repeat: repeat-y;
+  padding: 4px 34px 30px 52px;
   scrollbar-width: thin; scrollbar-color: var(--shadow-dark) transparent;
 }
 .big-paper-body::-webkit-scrollbar { width: 8px; }
 .big-paper-body::-webkit-scrollbar-track { background: transparent; }
 .big-paper-body::-webkit-scrollbar-thumb { background: var(--shadow-dark); border-radius: 8px; }
 
-.pv-icons { position: absolute; top: 12px; right: 14px; display: flex; gap: 6px; z-index: 2; }
+.pv-icons { position: absolute; top: 12px; right: 14px; display: flex; gap: 6px; z-index: 4; }
 .pv-icon-btn {
   width: 32px; height: 32px; border-radius: 9px; border: none; cursor: pointer;
   background: var(--bg-column); color: var(--ink-muted); display: flex; align-items: center; justify-content: center;
