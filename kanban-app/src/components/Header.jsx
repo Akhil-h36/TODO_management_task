@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useTaskActions, useTaskState } from "../context/TaskContext";
+import { useTheme } from "../hooks/useTheme";
 import ConfirmDialog from "./ConfirmDialog";
 
 export default function Header({ onNewTask }) {
   const { searchTerm, setSearchTerm, tasks } = useTaskState();
   const { clearAll } = useTaskActions();
+  const { theme, toggleTheme } = useTheme();
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   return (
@@ -26,6 +28,22 @@ export default function Header({ onNewTask }) {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+        <button
+          className="btn-theme"
+          title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          onClick={toggleTheme}
+        >
+          {theme === "dark" ? (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+              <circle cx="12" cy="12" r="4.2" />
+              <path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6" />
+            </svg>
+          ) : (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+              <path d="M20 14.2A8.2 8.2 0 1 1 9.8 4a6.6 6.6 0 0 0 10.2 10.2Z" />
+            </svg>
+          )}
+        </button>
         <button
           className="btn-wipe"
           disabled={tasks.length === 0}

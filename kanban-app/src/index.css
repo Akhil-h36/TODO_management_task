@@ -15,6 +15,45 @@
   --medium: #e0a030;
   --low: #3fa66b;
   --radius-lg: 22px;
+  --dash-line: #d5dae0;
+  --drag-over-bg: #eaedf1;
+  --hover-strong: #e6e9ec;
+}
+
+/* Dark palette: same token names, different values, so every component
+   below stays theme-agnostic. Applied automatically from OS preference,
+   or forced by the toggle via [data-theme] (which always wins). */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg-board: #1c1e22;
+    --bg-column: #17191c;
+    --shadow-light: #24272c;
+    --shadow-dark: #0d0e10;
+    --ink: #e9ebee;
+    --ink-muted: #8b929c;
+    --paper: #24272c;
+    --rule-line: rgba(110, 150, 255, 0.12);
+    --margin-line: rgba(255, 110, 110, 0.38);
+    --accent-blue: #5b8afc;
+    --dash-line: #3a3e46;
+    --drag-over-bg: #202329;
+    --hover-strong: #2c2f36;
+  }
+}
+:root[data-theme="dark"] {
+  --bg-board: #1c1e22;
+  --bg-column: #17191c;
+  --shadow-light: #24272c;
+  --shadow-dark: #0d0e10;
+  --ink: #e9ebee;
+  --ink-muted: #8b929c;
+  --paper: #24272c;
+  --rule-line: rgba(110, 150, 255, 0.12);
+  --margin-line: rgba(255, 110, 110, 0.38);
+  --accent-blue: #5b8afc;
+  --dash-line: #3a3e46;
+  --drag-over-bg: #202329;
+  --hover-strong: #2c2f36;
 }
 
 *{ box-sizing: border-box; }
@@ -80,6 +119,16 @@ header { display: flex; align-items: flex-end; justify-content: space-between; g
 .btn-wipe:hover:not(:disabled) { color: var(--high); transform: translateY(-2px); }
 .btn-wipe:disabled { opacity: 0.4; cursor: not-allowed; }
 
+.btn-theme {
+  width: 44px; height: 44px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-column); color: var(--ink-muted); border: none; cursor: pointer;
+  border-radius: 14px;
+  box-shadow: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light);
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+.btn-theme:hover { color: var(--accent-blue); transform: translateY(-2px) rotate(12deg); }
+
 .filters { display: flex; gap: 10px; margin-bottom: 26px; flex-wrap: wrap; }
 .chip {
   font-family: "Noto Sans"; font-weight: 600; font-size: 12.5px; letter-spacing: 0.01em;
@@ -108,7 +157,7 @@ header { display: flex; align-items: flex-end; justify-content: space-between; g
   transition: box-shadow 0.2s ease, background 0.2s ease;
 }
 .column.drag-over {
-  background: #eaedf1;
+  background: var(--drag-over-bg);
   box-shadow: inset 7px 7px 15px var(--shadow-dark), inset -7px -7px 15px var(--shadow-light), 0 0 0 2px rgba(61, 111, 224, 0.3);
 }
 
@@ -185,9 +234,9 @@ header { display: flex; align-items: flex-end; justify-content: space-between; g
 }
 .icon-btn:hover { color: var(--high); }
 
-.empty-state { border: 2px dashed #d5dae0; border-radius: 14px; padding: 22px 12px; text-align: center; color: var(--ink-muted); font-size: 13px; }
+.empty-state { border: 2px dashed var(--dash-line); border-radius: 14px; padding: 22px 12px; text-align: center; color: var(--ink-muted); font-size: 13px; }
 .add-inline {
-  margin-top: 14px; width: 100%; background: transparent; border: 2px dashed #d5dae0; border-radius: 12px; padding: 10px;
+  margin-top: 14px; width: 100%; background: transparent; border: 2px dashed var(--dash-line); border-radius: 12px; padding: 10px;
   color: var(--ink-muted); font-family: "Noto Sans"; font-weight: 600; font-size: 13px; cursor: pointer;
 }
 .add-inline:hover { color: var(--ink); border-color: var(--accent-blue); }
@@ -228,7 +277,7 @@ header { display: flex; align-items: flex-end; justify-content: space-between; g
    never push the modal taller than the viewport; the header above stays
    put as chrome instead of scrolling away with the text. */
 .big-paper-body {
-  flex: 1 1 auto; min-height: 0; overflow-y: auto;
+  flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden;
   background: var(--paper);
   background-image: repeating-linear-gradient(var(--paper) 0 27px, var(--rule-line) 27px 28px);
   background-position: 0 2px; background-repeat: repeat-y;
@@ -260,7 +309,7 @@ header { display: flex; align-items: flex-end; justify-content: space-between; g
 .pv-desc em { color: var(--ink-muted); }
 
 .pv-title-input {
-  width: 100%; border: none; border-bottom: 2px dashed #d5dae0; background: transparent; outline: none;
+  width: 100%; border: none; border-bottom: 2px dashed var(--dash-line); background: transparent; outline: none;
   font-family: "Roboto"; font-weight: 900; font-size: 22px; color: var(--ink); padding: 2px 0 8px; margin-bottom: 4px;
 }
 .pv-title-input.error { border-bottom-color: var(--high); }
@@ -318,22 +367,25 @@ header { display: flex; align-items: flex-end; justify-content: space-between; g
 .datepicker.error .datepicker-trigger { box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light), 0 0 0 2px rgba(225, 82, 82, 0.4); }
 
 .datepicker-pop {
-  position: absolute; top: calc(100% + 6px); left: 0; z-index: 10; width: 240px;
-  background: var(--paper); border-radius: 14px; padding: 12px;
+  /* Right-aligned to the trigger (the date field is always the rightmost
+     column in its row) so the popup grows back over the row instead of
+     past the card's right edge, which used to force a horizontal scroll. */
+  position: absolute; top: calc(100% + 6px); right: 0; z-index: 10; width: 196px; max-width: calc(100vw - 72px);
+  background: var(--paper); border-radius: 12px; padding: 9px;
   box-shadow: 0 10px 24px rgba(20, 22, 26, 0.16), 0 2px 6px rgba(20, 22, 26, 0.08);
 }
-.datepicker-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-family: "Roboto"; font-weight: 700; font-size: 12.5px; color: var(--ink); }
+.datepicker-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; font-family: "Roboto"; font-weight: 700; font-size: 11px; color: var(--ink); }
 .datepicker-head button {
-  width: 24px; height: 24px; border: none; border-radius: 7px; background: var(--bg-column); color: var(--ink-muted);
-  cursor: pointer; font-size: 15px; line-height: 1; display: flex; align-items: center; justify-content: center;
+  width: 19px; height: 19px; border: none; border-radius: 6px; background: var(--bg-column); color: var(--ink-muted);
+  cursor: pointer; font-size: 12px; line-height: 1; display: flex; align-items: center; justify-content: center;
 }
 .datepicker-head button:hover { color: var(--ink); }
-.datepicker-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 4px; }
-.datepicker-weekdays span { text-align: center; font-size: 10.5px; font-weight: 700; color: var(--ink-muted); }
-.datepicker-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.datepicker-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 2px; }
+.datepicker-weekdays span { text-align: center; font-size: 9px; font-weight: 700; color: var(--ink-muted); }
+.datepicker-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; }
 .datepicker-cell {
-  aspect-ratio: 1; border: none; background: transparent; border-radius: 8px;
-  font-family: "Noto Sans"; font-size: 12px; color: var(--ink); cursor: pointer;
+  aspect-ratio: 1; border: none; background: transparent; border-radius: 6px;
+  font-family: "Noto Sans"; font-size: 10.5px; color: var(--ink); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
 }
 .datepicker-cell.empty { cursor: default; }
@@ -355,6 +407,6 @@ header { display: flex; align-items: flex-end; justify-content: space-between; g
 .confirm-actions { display: flex; justify-content: flex-end; gap: 8px; }
 .confirm-btn { border: none; border-radius: 10px; padding: 9px 16px; font-family: "Noto Sans"; font-weight: 700; font-size: 13px; cursor: pointer; }
 .confirm-btn.cancel { background: var(--bg-column); color: var(--ink); }
-.confirm-btn.cancel:hover { background: #e6e9ec; }
+.confirm-btn.cancel:hover { background: var(--hover-strong); }
 .confirm-btn.danger { background: var(--high); color: #fff; }
 .confirm-btn.danger:hover { background: #c94545; }
